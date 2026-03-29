@@ -60,5 +60,25 @@ extern "C" {
         }
         return (double)(clock() - inicio) / CLOCKS_PER_SEC * 1000;
     }
-
+    EMSCRIPTEN_KEEPALIVE
+    const char* stepN(const char* tentativa, const char* password, int n) {
+        char localTry[64];
+        strcpy(localTry, tentativa);
+        if(strcmp(localTry, password) == 0){
+            return NULL;
+        }
+        for(int i = 0; i < n; i++){
+            strcpy(localTry, increment(localTry));
+            if(strcmp(localTry, password) == 0){
+                return NULL;
+            }   
+        }
+        strcpy(result, localTry);
+        return result;
+        // copia tentativa pra um buffer local
+        // loop n vezes:
+        //   incrementa
+        //   se achou password: retorna null ou string especial indicando sucesso
+        // retorna a tentativa atual depois de n iterações
+    }
 }
