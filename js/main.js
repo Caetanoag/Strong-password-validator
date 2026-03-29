@@ -23,8 +23,7 @@ passwordBtn.addEventListener("click", async (e) => {
     passwordBtn.disabled = true;
     const password = passwordForm.querySelector("#senha").value;
     for(let i = 0; i < password.length && canBreak; i++){
-        if(!alfabeto[password[i]] && alfabeto[password[i] !== 0]) {
-            console.log(alfabeto[password[i]])
+        if(!Object.hasOwn(alfabeto, password[i])) {
             canBreak = false;
         }
     }
