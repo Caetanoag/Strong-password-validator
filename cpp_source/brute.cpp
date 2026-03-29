@@ -4,7 +4,7 @@
 
 
 static char result[64];
-static const char* alfabeto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*()";
+static const char* alfabeto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*()1234567890";
 static const int indices[256] = {
     ['a']=0,  ['b']=1,  ['c']=2,  ['d']=3,  ['e']=4,
     ['f']=5,  ['g']=6,  ['h']=7,  ['i']=8,  ['j']=9,
