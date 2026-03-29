@@ -8,7 +8,7 @@ body {
     gap:40px
 }
 #password-form {
-    max-width: 24vw;
+    max-width: min(24vw, 90vw);
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -49,4 +49,12 @@ body {
 }
 .hidden {
     display: none;
+}
+@media (max-width: 768px) {
+    #password-form {
+        max-width: 90vw;
+    }
+    .found-password-div {
+        max-width: 90vw;
+    }
 }
