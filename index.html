@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testador de senha</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <form action="" id="password-form">
+        <label for="senha">Digite uma senha: </label>
+        <input type="text" name="senha" id="senha" maxlength="30" required>
+        <button type="submit" id="password-submit-btn">Testar senha</button>
+    </form>
+    <div class="loading-class hidden" id="spinner">
+        <p>Quebrando sua senha...</p>
+        <div class="spinner">
+
+        </div>
+    </div>
+    
+    <div id="found-dialoge-box" class="found-password-div hidden">
+
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
