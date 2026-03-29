@@ -2,85 +2,28 @@ const spinner = document.getElementById("spinner");
 const dialogebox = document.getElementById("found-dialoge-box");
 const passwordForm = document.getElementById("password-form");
 const passwordBtn = document.getElementById("password-submit-btn");
-const alfabeto = {
-    'a': 0,  'b': 1,  'c': 2,  'd': 3,  'e': 4,
-    'f': 5,  'g': 6,  'h': 7,  'i': 8,  'j': 9,
-    'k': 10, 'l': 11, 'm': 12, 'n': 13, 'o': 14,
-    'p': 15, 'q': 16, 'r': 17, 's': 18, 't': 19,
-    'u': 20, 'v': 21, 'w': 22, 'x': 23, 'y': 24,
-    'z': 25, 'A': 26, 'B': 27, 'C': 28, 'D': 29,
-    'E': 30, 'F': 31, 'G': 32, 'H': 33, 'I': 34,
-    'J': 35, 'K': 36, 'L': 37, 'M': 38, 'N': 39,
-    'O': 40, 'P': 41, 'Q': 42, 'R': 43, 'S': 44,
-    'T': 45, 'U': 46, 'V': 47, 'W': 48, 'X': 49,
-    'Y': 50, 'Z': 51, '!': 52, '@': 53, '#': 54,
-    '$': 55, '%': 56, '&': 57, '*': 58, '(': 59,
-    ')': 60,
-}
 let tempo1 = Date.now();
 let totaltime = 0;
-const alfabetoKeys = Object.keys(alfabeto);
-passwordBtn.addEventListener("click", async (e) => {
+
+const worker = new Worker('worker.js')
+
+worker.onmessage = (e) => {
+    const totaltime = e.data
+    spinner.classList.add("hidden")
+    dialogebox.classList.remove("hidden");
+    const p = document.createElement("p");
+    p.innerText = `Sua senha foi quebrada em ${totaltime} milissegundos`;
+    dialogebox.appendChild(p);
+    console.log(totaltime)
+}
+
+passwordBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    let canBreak = true;
+    dialogebox.innerHTML = "";
     dialogebox.classList.add("hidden");
-    passwordBtn.disabled = true;
     const password = passwordForm.querySelector("#senha").value;
-    for(let i = 0; i < password.length && canBreak; i++){
-        if(!Object.hasOwn(alfabeto, password[i])) {
-            canBreak = false;
-        }
+    spinner.classList.remove("hidden");
+    if(password){
+        worker.postMessage(password);
     }
-    if(!canBreak){
-        alert("A senha contém caracteres não aceitos");
-    }
-    if(password && canBreak) {
-        tempo1 = Date.now();
-        spinner.classList.remove("hidden")
-        await breakPassword(password, alfabeto);
-        totaltime = Date.now() - tempo1;
-        spinner.classList.add("hidden");
-        dialogebox.innerHTML = "";
-        const pElement = document.createElement("p");
-        pElement.innerText = `Senha quebrada em ${totaltime} milissegundos`;
-        dialogebox.appendChild(pElement);
-        dialogebox.classList.remove("hidden");
-    }
-    passwordBtn.disabled = false;
-});
-function breakPassword(password){
-    return new Promise((resolve) => {
-        step(password, "a", resolve);
-    })
-}
-function step(password, tentativa, resolve) {
-    if(tentativa === password){
-        resolve(tentativa);
-        return tentativa
-    }
-    setTimeout(() => {
-        for(let n  = 0; n < 100_000; n++) {
-            tentativa = increment(tentativa, alfabeto);
-            if(tentativa === password){
-                
-                resolve(tentativa);
-                return tentativa
-            }
-        }
-        step(password, tentativa, resolve);
-    }, 0);
-}
-function increment(string, alfabeto) {
-    let chars = string.split('');
-    let i = chars.length - 1;
-    while(i>=0){
-        const index = alfabeto[chars[i]];
-        if(index < alfabetoKeys.length - 1){
-            chars[i] = alfabetoKeys[index+1];
-            return chars.join("");
-        }
-        chars[i] = alfabetoKeys[0];
-        i--;
-    }
-    return "a".repeat(string.length + 1);
-}
+})
