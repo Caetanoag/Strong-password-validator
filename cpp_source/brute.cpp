@@ -3,7 +3,8 @@
 #include <time.h>
 
 
-static char result[64];
+static char result_increment[64];
+static char result_step[64];
 static const char* alfabeto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*()1234567890";
 static const int indices[256] = {
     ['a']=0,  ['b']=1,  ['c']=2,  ['d']=3,  ['e']=4,
@@ -29,36 +30,28 @@ extern "C" {
     EMSCRIPTEN_KEEPALIVE
     const char* increment(const char* str) {
         char chars[64];
+        int len = strlen(str);
         strcpy(chars, str);
-        int i = strlen(str) -1;
+        int i = len -1;
         while(i >= 0){
             const int index = indices[(unsigned char)chars[i]];
             if(index < alfabeto_len - 1){
                 chars[i] = alfabeto[index+1];
-                strcpy(result, chars);
-                return result;
+                strcpy(result_increment, chars);
+                return result_increment;
             }
             chars[i] = alfabeto[0];
             i--;
         }
-        for(int i = 0; i < strlen(str) + 1;i++){
-            result[i] = alfabeto[0];
+        if (len + 1 >= 63) {
+            result_increment[0] = '\0';
+            return result_increment;
         }
-        result[strlen(str) + 1] = '\0';
-        return result;
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    int breakPassword(const char* password) {
-        char tentativa[64] = "a";
-        if(strcmp(tentativa, password) == 0){
-            return 0;
+        for(int i = 0; i <= len; i++){
+            result_increment[i] = alfabeto[0];
         }
-        clock_t inicio = clock();
-        while(strcmp(tentativa, password) != 0){
-            strcpy(tentativa, increment(tentativa));
-        }
-        return (double)(clock() - inicio) / CLOCKS_PER_SEC * 1000;
+        result_increment[len + 1] = '\0';
+        return result_increment;
     }
     EMSCRIPTEN_KEEPALIVE
     const char* stepN(const char* tentativa, const char* password, int n) {
@@ -73,12 +66,7 @@ extern "C" {
                 return NULL;
             }   
         }
-        strcpy(result, localTry);
-        return result;
-        // copia tentativa pra um buffer local
-        // loop n vezes:
-        //   incrementa
-        //   se achou password: retorna null ou string especial indicando sucesso
-        // retorna a tentativa atual depois de n iterações
+        strcpy(result_step, localTry);
+        return result_step;
     }
 }
